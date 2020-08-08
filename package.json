@@ -1,0 +1,19 @@
+{
+  "name": "ffxiv-job-randomizer",
+  "version": "1.0.0",
+  "description": "FFXIV Job Randomizer for super fun times",
+  "main": "src/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miqotemachinist/ffxiv-job-randomizer.git"
+  },
+  "author": "Hati Asteri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miqotemachinist/ffxiv-job-randomizer/issues"
+  },
+  "homepage": "https://github.com/miqotemachinist/ffxiv-job-randomizer#readme"
+}
