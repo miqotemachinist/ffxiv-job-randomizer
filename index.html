@@ -35,6 +35,7 @@
     'numSegments': 17,
     'outerRadius': 200,
     'textFontSize': 18,
+    'pointerAngle': 0,
     'segments': [
       { 'fillStyle': '#a8d2e6', 'text': 'Paladin' },
       { 'fillStyle': '#cf2621', 'text': 'Warrior' },
@@ -58,17 +59,22 @@
       { 'fillStyle': '#8657ff', 'text': 'Scholar' },
       { 'fillStyle': '#ffe74a', 'text': 'Astrologian' }
     ],
-    'animation':
-    {
+    'animation': {
       'type': 'spinToStop',
       'duration': 5,
       'spins': 8,
-      'callbackFinished': 'spinFinished'
+      'callbackFinished': 'spinFinished()'
+    },
+    'pointerGuide': {
+      'display': true,
+      'strokeStyle': 'red',
+      'lineWidth': 3
     }
   });
 
-  function spinFinished(indicatedSegment) {
-    document.querySelector('.spin-result h2').innerHTML(`You will be playing as a(an) ${indicatedSegment.txt}`)
+  function spinFinished() {
+    document.querySelector('.spin-result > h2').innerHTML = `You will be playing as a(an) ${theWheel.getIndicatedSegment().text}`;
+    console.log(theWheel.getIndicatedSegment());
   }
 </script>
 
