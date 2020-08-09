@@ -15,5 +15,7 @@
   "bugs": {
     "url": "https://github.com/miqotemachinist/ffxiv-job-randomizer/issues"
   },
-  "homepage": "https://github.com/miqotemachinist/ffxiv-job-randomizer#readme"
+  "homepage": "https://github.com/miqotemachinist/ffxiv-job-randomizer#readme",
+  "dependencies": {
+  }
 }

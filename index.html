@@ -1,13 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FFXIV Job Randomizer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FFXIV Job Randomizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <script src='Winwheel.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js"></script>
 </head>
+<style>
+  body {
+    font-family: "Open Sans", sans-serif;
+  }
+</style>
+
 <body>
-    <section>
-        <p>HELLO WORLD!</p>
-    </section>
+  <section>
+    <h1>FFXIV Job Randomizer</h1>
+    <p>For a super fun time in FFXIV</p>
+    <canvas id='canvas' width='880' height='500'>
+      Canvas not supported, use another browser.
+    </canvas>
+    <div class="button-wrapper">
+      <button class="randomize-button" onClick="theWheel.startAnimation();">RANDOMIZE!</button>
+    </div>
+    <div class="spin-result">
+      <h2></h2>
+    </div>
+  </section>
 </body>
+<script>
+  let theWheel = new Winwheel({
+    'numSegments': 17,
+    'outerRadius': 200,
+    'textFontSize': 18,
+    'segments': [
+      { 'fillStyle': '#a8d2e6', 'text': 'Paladin' },
+      { 'fillStyle': '#cf2621', 'text': 'Warrior' },
+      { 'fillStyle': '#d126cc', 'text': 'Dark Knight' },
+      { 'fillStyle': '#796d30', 'text': 'Gunbreaker' },
+
+      { 'fillStyle': '#4164CD', 'text': 'Dragoon' },
+      { 'fillStyle': '#d69c00', 'text': 'Monk' },
+      { 'fillStyle': '#bF2974', 'text': 'Ninja' },
+      { 'fillStyle': '#e46d04', 'text': 'Samurai' },
+
+      { 'fillStyle': '#A579D6', 'text': 'Black Mage' },
+      { 'fillStyle': '#2D9B78', 'text': 'Summoner' },
+      { 'fillStyle': '#e87b7b', 'text': 'Red Mage' },
+
+      { 'fillStyle': '#6EE1D6', 'text': 'Machinist' },
+      { 'fillStyle': '#91ba5e', 'text': 'Bard' },
+      { 'fillStyle': '#e2b0af', 'text': 'Dancer' },
+
+      { 'fillStyle': '#fff0dc', 'text': 'White Mage' },
+      { 'fillStyle': '#8657ff', 'text': 'Scholar' },
+      { 'fillStyle': '#ffe74a', 'text': 'Astrologian' }
+    ],
+    'animation':
+    {
+      'type': 'spinToStop',
+      'duration': 5,
+      'spins': 8,
+      'callbackFinished': 'spinFinished'
+    }
+  });
+
+  function spinFinished(indicatedSegment) {
+    document.querySelector('.spin-result h2').innerHTML(`You will be playing as a(an) ${indicatedSegment.txt}`)
+  }
+</script>
+
 </html>
