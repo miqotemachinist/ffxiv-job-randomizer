@@ -13,12 +13,29 @@
   body {
     font-family: "Open Sans", sans-serif;
     background-color: black;
+    background-image: url('img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: white;
+    margin: 0;
+    padding: 3em 0 0;
+    box-sizing: border-box;
+    min-height: 100vh;
   }
 
   section{
-    max-width: 1000px;
+    max-width: 1280px;
     margin: 0 auto;
+  }
+
+  .job-randomizer-window{
+    max-width: 1280px;
+    margin: auto;
+    background-color: #313031;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 0px 3px 5px rgba(0,0,0,0.5);
   }
 
   .header-section h1{
@@ -32,6 +49,19 @@
   .job-roulette-section{
     display: grid;
     grid-template-columns: 500px auto;
+    grid-template-rows: auto auto;
+  }
+
+  @media (min-width: 1280px){
+    .job-roulette-section{
+      grid-template-columns: 500px 300px auto;
+      grid-template-rows: auto;
+    }
+  }
+
+  .input-form{
+    max-width: 300px;
+    margin: 2em auto 0;
   }
 
   .job-item{
@@ -40,7 +70,7 @@
 
   .job-group{
     display: grid;
-    grid-template-columns: repeat(4, 50px);
+    grid-template-columns: 70px repeat(4, 50px);
   }
 
   .form-jobs{
@@ -53,7 +83,8 @@
     grid-gap: 10px;
   }
 
-  .job-label{
+  .job-label,
+  .select-all-label{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -63,12 +94,15 @@
     transition: opacity 300ms;
   }
 
+  .select-all-label p,
   .job-label p{
     margin: 0;
     text-align: center;
     font-size: 0.9em;
+    width: 100%;
   }
 
+  .select-all-label img,
   .job-label img{
     max-width: 30px;
     width: 100%;
@@ -102,55 +136,64 @@
   .team-list-header h3{
     text-align: center;
   }
+
+  .spin-result{
+    text-align: center;
+  }
 </style>
 
 <body>
-  <section class="header-section">
-    <h1>FFXIV Job Randomizer</h1>
-    <p>For a super fun time in FFXIV</p>
-  </section>
-  <section class="job-roulette-section">
-    <canvas id='canvas' width='500' height='500'>
-      Canvas not supported, use another browser.
-    </canvas>
-    <div class="input-form">
-      <div class="job-selections">
-        <form class="form-jobs" onchange="jobFormChange()">
-          <div class="info">
-            <div class="info-item">
-              <label for="name">Name</label>
-              <input type="text" name="name" id="name">
+  <section class="job-randomizer-window">
+    <section class="header-section">
+      <h1>FFXIV Job Randomizer</h1>
+      <p>For a super fun time in FFXIV</p>
+    </section>
+    <section class="job-roulette-section">
+      <canvas id='canvas' width='500' height='500'>
+        Canvas not supported, use another browser.
+      </canvas>
+      <div class="input-form">
+        <div class="job-selections">
+          <form class="form-jobs">
+            <div class="info">
+              <div class="info-item">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name">
+              </div>
+              <!-- <div class="info-item">
+                <label for="server">Server</label>
+                <input type="text" name="server" id="server" disabled >
+              </div>
+              <div class="info-item">
+                <button disabled>Import</button>
+              </div> -->
             </div>
-            <!-- <div class="info-item">
-              <label for="server">Server</label>
-              <input type="text" name="server" id="server" disabled >
+            <div class="jobs" onchange="jobFormChange()">
             </div>
-            <div class="info-item">
-              <button disabled>Import</button>
-            </div> -->
+  
+          </form>
+        </div>
+        <div class="button-wrapper">
+          <button class="randomize-button" onClick="spinTheWheel()">RANDOMIZE!</button>
+        </div>
+      </div>
+      <div class="resulting-team">
+        <div class="team-list-wrapper">
+          <div class="team-list-header">
+            <h3>Party Members</h3>
           </div>
-          <div class="jobs">
+          <div class="team-list">
+          
           </div>
-
-        </form>
+        </div>
       </div>
-      <div class="button-wrapper">
-        <button class="randomize-button" onClick="spinTheWheel()">RANDOMIZE!</button>
+    </section>
+    
+    <section class="selected-job">
+      <div class="spin-result">
+        <h2></h2>
       </div>
-    </div>
-  </section>
-  <section class="resulting-team">
-    <div class="spin-result">
-      <h2></h2>
-    </div>
-    <div class="team-list-wrapper">
-      <div class="team-list-header">
-        <h3>Party Members</h3>
-      </div>
-      <div class="team-list">
-      
-      </div>
-    </div>
+    </section>
   </section>
 </body>
 <script>
@@ -274,7 +317,7 @@
 
   const spinFinished = () => {
     let selected = theWheel.getIndicatedSegment();
-    document.querySelector('.spin-result > h2').innerHTML = `You will be playing as a(an) ${selected.text} (${selected.id})`;
+    document.querySelector('.spin-result > h2').innerHTML = `You will be playing ${selected.text} (${selected.id})`;
     console.log(selected);
 
     let formData = new FormData(document.querySelector('.form-jobs'));
@@ -354,6 +397,15 @@
     theWheel.draw();
   }
 
+  const selectAllJobs = (jobType) => {
+    if(jobType){
+      let selectAllButton = document.querySelector(`#select-all-${jobType}`);
+      jobTypes[jobType].forEach((jobKey)=>{
+        document.querySelector(`.job-item #${jobKey}`).checked = selectAllButton ? selectAllButton.checked : false;
+      });
+    }
+  }
+
   const updateRoster = () => {
     let rosterContainer = document.querySelector('.team-list');
     rosterContainer.innerHTML = roster.reduce((total, curr)=>{
@@ -373,6 +425,18 @@
     jobTypeKeys.forEach((jobType, ind)=>{
       let jobGroupElement = document.createElement("div");
       jobGroupElement.className=`job-group job-group-${jobType}`;
+
+      let selectAllButton = document.createElement("div");
+      selectAllButton.className=`job-select-all job-select-all-${jobType}`;
+      selectAllButton.innerHTML = `
+        <input type="checkbox" checked name="select-all-${jobType}" id="select-all-${jobType}" onchange="selectAllJobs('${jobType}')">
+        <label for="select-all-${jobType}" class="select-all-label select-all-label-${jobType}">
+          
+          <img src="img/${jobType}.png"/>
+          <p>${jobType}</p>
+        </label>
+      `;
+      jobGroupElement.appendChild(selectAllButton);
 
       jobTypes[jobType].forEach((jobKey)=>{
         let jobElement = document.createElement("div");
