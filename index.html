@@ -12,6 +12,21 @@
 <style>
   body {
     font-family: "Open Sans", sans-serif;
+    background-color: black;
+    color: white;
+  }
+
+  section{
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .header-section h1{
+    text-align: center;
+  }
+
+  .header-section p{
+    text-align: center;
   }
   
   .job-roulette-section{
@@ -38,18 +53,59 @@
     grid-gap: 10px;
   }
 
-  .team-list{
+  .job-label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 300ms;
+  }
 
+  .job-label p{
+    margin: 0;
+    text-align: center;
+    font-size: 0.9em;
+  }
+
+  .job-label img{
+    max-width: 30px;
+    width: 100%;
+    height: auto;
+  }
+
+  .jobs input[type="checkbox"]{
+    display: none;
+  }
+
+  .jobs input[type="checkbox"]:checked + label{
+    opacity: 1;
+  }
+
+  .team-list{
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #111
   }
 
   .party-member{
     display: grid;
     grid-template-columns: 50px 150px auto;
   }
+
+  .job-icon{
+    max-width: 30px;
+    width: 100%;
+  }
+
+  .team-list-header h3{
+    text-align: center;
+  }
 </style>
 
 <body>
-  <section>
+  <section class="header-section">
     <h1>FFXIV Job Randomizer</h1>
     <p>For a super fun time in FFXIV</p>
   </section>
@@ -65,93 +121,15 @@
               <label for="name">Name</label>
               <input type="text" name="name" id="name">
             </div>
-            <div class="info-item">
+            <!-- <div class="info-item">
               <label for="server">Server</label>
               <input type="text" name="server" id="server" disabled >
             </div>
             <div class="info-item">
               <button disabled>Import</button>
-            </div>
+            </div> -->
           </div>
           <div class="jobs">
-            <div class="job-group tanks">
-              <div class="job-item">
-                <label for="pld">PLD</label>
-                <input type="checkbox" checked name="pld" id="pld">
-              </div>
-              <div class="job-item">
-                <label for="war">WAR</label>
-                <input type="checkbox" checked name="war" id="war">
-              </div>
-              <div class="job-item">
-                <label for="drk">DRK</label>
-                <input type="checkbox" checked name="drk" id="drk">
-              </div>
-              <div class="job-item">
-                <label for="gnb">GNB</label>
-                <input type="checkbox" checked name="gnb" id="gnb">
-              </div>
-            </div>
-            <div class="job-group melee">
-              <div class="job-item">
-                <label for="mnk">MNK</label>
-                <input type="checkbox" checked name="mnk" id="mnk">
-              </div>
-              <div class="job-item">
-                <label for="drg">DRG</label>
-                <input type="checkbox" checked name="drg" id="drg">
-              </div>
-              <div class="job-item">
-                <label for="nin">NIN</label>
-                <input type="checkbox" checked name="nin" id="nin">
-              </div>
-              <div class="job-item">
-                <label for="sam">SAM</label>
-                <input type="checkbox" checked name="sam" id="sam">
-              </div>
-            </div>
-            <div class="job-group ranged">
-              <div class="job-item">
-                <label for="brd">BRD</label>
-                <input type="checkbox" checked name="brd" id="brd">
-              </div>
-              <div class="job-item">
-                <label for="mch">MCH</label>
-                <input type="checkbox" checked name="mch" id="mch">
-              </div>
-              <div class="job-item">
-                <label for="dnc">DNC</label>
-                <input type="checkbox" checked name="dnc" id="dnc">
-              </div>
-            </div>
-            <div class="job-group caster">
-              <div class="job-item">
-                <label for="blm">BLM</label>
-                <input type="checkbox" checked name="blm" id="blm">
-              </div>
-              <div class="job-item">
-                <label for="smn">SMN</label>
-                <input type="checkbox" checked name="smn" id="smn">
-              </div>
-              <div class="job-item">
-                <label for="rdm">RDM</label>
-                <input type="checkbox" checked name="rdm" id="rdm">
-              </div>
-            </div>
-            <div class="job-group healer">
-              <div class="job-item">
-                <label for="whm">WHM</label>
-                <input type="checkbox" checked name="whm" id="whm">
-              </div>
-              <div class="job-item">
-                <label for="sch">SCH</label>
-                <input type="checkbox" checked name="sch" id="sch">
-              </div>
-              <div class="job-item">
-                <label for="ast">AST</label>
-                <input type="checkbox" checked name="ast" id="ast">
-              </div>
-            </div>
           </div>
 
         </form>
@@ -180,93 +158,118 @@
     pld: {
       name: 'Paladin',
       color: '#a8d2e6',
-      icon: ''
+      icon: 'img/pld.png',
+      type: 'tank'
     },
     war: {
       name: 'Warrior',
       color: '#cf2621',
-      icon: ''
+      icon: 'img/war.png',
+      type: 'tank'
     },
     drk: {
       name: 'Dark Knight',
       color: '#d126cc',
-      icon: ''
+      icon: 'img/drk.png',
+      type: 'tank'
     },
     gnb: {
       name: 'Gunbreaker',
       color: '#796d30',
-      icon: ''
+      icon: 'img/gnb.png',
+      type: 'tank'
     },
 
     drg: {
       name: 'Dragoon',
       color: '#4164CD',
-      icon: ''
+      icon: 'img/drg.png',
+      type: 'melee'
     },
     mnk: {
       name: 'Monk',
       color: '#d69c00',
-      icon: ''
+      icon: 'img/mnk.png',
+      type: 'melee'
     },
     nin: {
       name: 'Ninja',
       color: '#bF2974',
-      icon: ''
+      icon: 'img/nin.png',
+      type: 'melee'
     },
     sam: {
       name: 'Samurai',
       color: '#e46d04',
-      icon: ''
+      icon: 'img/sam.png',
+      type: 'melee'
     },
 
     blm: {
       name: 'Black Mage',
       color: '#A579D6',
-      icon: ''
+      icon: 'img/blm.png',
+      type: 'caster'
     },
     smn: {
       name: 'Summoner',
       color: '#2D9B78',
-      icon: ''
+      icon: 'img/smn.png',
+      type: 'caster'
     },
     rdm: {
       name: 'Red Mage',
       color: '#e87b7b',
-      icon: ''
+      icon: 'img/rdm.png',
+      type: 'caster'
     },
 
     mch: {
       name: 'Machinist',
       color: '#6EE1D6',
-      icon: ''
+      icon: 'img/mch.png',
+      type: 'ranged'
     },
     brd: {
       name: 'Bard',
       color: '#91ba5e',
-      icon: ''
+      icon: 'img/brd.png',
+      type: 'ranged'
     },
     dnc: {
       name: 'Dancer',
       color: '#e2b0af',
-      icon: ''
+      icon: 'img/dnc.png',
+      type: 'ranged'
     },
 
     whm: {
       name: 'White Mage',
       color: '#fff0dc',
-      icon: ''
+      icon: 'img/whm.png',
+      type: 'healer'
     },
     sch: {
       name: 'Scholar',
       color: '#8657ff',
-      icon: ''
+      icon: 'img/sch.png',
+      type: 'healer'
     },
     ast: {
       name: 'Astrologian',
       color: '#ffe74a',
-      icon: ''
+      icon: 'img/ast.png',
+      type: 'healer'
     }
 
+  }
+
+  const jobTypes = {
+    tank: ['pld', 'war', 'drk', 'gnb'],
+    melee: ['mnk', 'drg', 'nin', 'sam'],
+    ranged: ['brd', 'mch', 'dnc'],
+    caster: ['blm', 'smn', 'rdm'],
+    healer: ['whm', 'sch', 'ast']
   }
 
   const spinFinished = () => {
@@ -356,7 +359,7 @@
     rosterContainer.innerHTML = roster.reduce((total, curr)=>{
       return total + `
       <div class="party-member">
-        <div class="job-icon">${curr.job.toUpperCase()}</div>
+        <div class="job-icon"><img class="job-icon job-icon-${curr.job}" src="${jobs[curr.job].icon}"></div>
         <div class="job-title">${jobs[curr.job].name}</div>
         <div class="player">${curr.name}</div>
       </div>
@@ -364,9 +367,37 @@
     }, '');
   }
 
+  const jobsSelectionContainer = document.querySelector('div.jobs');
+  const generateJobCheckboxes = () => {
+    let jobTypeKeys = Object.keys(jobTypes);
+    jobTypeKeys.forEach((jobType, ind)=>{
+      let jobGroupElement = document.createElement("div");
+      jobGroupElement.className=`job-group job-group-${jobType}`;
+
+      jobTypes[jobType].forEach((jobKey)=>{
+        let jobElement = document.createElement("div");
+        jobElement.className = `job-item job-item-${jobKey}`;
+        jobElement.innerHTML = `
+          <input type="checkbox" checked name="${jobKey}" id="${jobKey}">
+          <label for="${jobKey}" class="job-label job-label-${jobKey}">
+            
+            <img src="${jobs[jobKey].icon}"/>
+            <p>${jobKey.toUpperCase()}</p>
+          </label>
+        `;
+        jobGroupElement.appendChild(jobElement);
+      });
+
+      jobsSelectionContainer.appendChild(jobGroupElement);
+    })
+  }
+
   var roster = [];
   var theWheel = setupWheel();
   var isSpinning = false;
+  jobsSelectionContainer.innerHTML='';
+  generateJobCheckboxes();
+  jobFormChange();
   
 </script>
 
