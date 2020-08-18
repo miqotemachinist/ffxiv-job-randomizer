@@ -66,6 +66,29 @@
 
   .job-item{
     display: grid;
+    position: relative;
+  }
+
+  .job-select-all input:disabled + label::before,
+  .job-select-all input:disabled + label::after,
+  .job-item input:disabled + label::before,
+  .job-item input:disabled + label::after{
+    content: "";
+    position: absolute;
+    background-color: red;
+    width: 47px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .job-select-all input:disabled + label::before,
+  .job-item input:disabled:disabled + label::before{
+    transform: rotateZ(60deg);
+  }
+
+  .job-select-all input:disabled + label::after,
+  .job-item input:disabled:disabled + label::after{
+    transform: rotateZ(-60deg);
   }
 
   .job-group{
@@ -146,6 +169,10 @@
   .randomize-button:hover{
     filter: brightness(105%);
   }
+  .randomize-button:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .party-member{
     display: grid;
@@ -192,6 +219,21 @@
                 <button disabled>Import</button>
               </div> -->
             </div>
+            <div class="random-options">
+              <div class="info-item random-options-balanced">
+                <input type="checkbox" name="balanced" id="balanced" checked>
+                <label for="balanced">Balanced Party</label>
+              </div>
+              <div class="info-item random-options-unique">
+                <input type="checkbox" name="unique" id="unique" checked>
+                <label for="unique">Unique Jobs</label>
+              </div>
+              <div class="info-item random-options-ttddddhh">
+                <input type="checkbox" name="ttddddhh" id="ttddddhh" checked disabled>
+                <label for="ttddddhh">2 Tanks / 4 DPS / 2 Healers</label>
+              </div>
+              <div class="options-warning">These options will be locked once you spin the wheel more than once until you refresh the page.</div>
+            </div>
             <div class="jobs" onchange="jobFormChange()">
             </div>
   
@@ -221,6 +263,26 @@
   </section>
 </body>
 <script>
+  var balancedParty = true;
+  var noDuplicateJobs = true;
+  var canChangeOption = true;
+  var selectedJobs = [];
+  var partyCompByType = {
+    tank: 0,
+    caster: 0,
+    melee: 0,
+    ranged: 0,
+    healer: 0
+  }
+  const maxPlayerType = {
+    tank: 2,
+    dps: 4,
+    caster: 2,
+    melee: 2,
+    ranged: 2,
+    healer: 2
+  };
+  const maxPlayerCount = 8;
   const jobs = {
     pld: {
       name: 'Paladin',
@@ -339,6 +401,45 @@
     healer: ['whm', 'sch', 'ast']
   }
 
+  const disableJob = (jobKey) => {
+    let targetJobItem = document.getElementById(jobKey);
+    if(targetJobItem){
+      targetJobItem.checked = false;
+      targetJobItem.disabled = true;
+    }
+  }
+
+  const disableAllJobs = (jobType) => {
+    let targetSelectAllButton = document.getElementById(`select-all-${jobType}`);
+    targetSelectAllButton.checked = false;
+    targetSelectAllButton.disabled = true;
+
+    jobTypes[jobType].forEach((jobKey)=>{
+      disableJob(jobKey);
+    })
+  }
+
+
+  const checkPartyComposition = () => {
+    let dpsCount = partyCompByType.caster + partyCompByType.melee + partyCompByType.ranged;
+    console.log('dpsCount');
+    if(partyCompByType.tank >= maxPlayerType.tank){
+      disableAllJobs('tank');
+    }
+    if(partyCompByType.healer >= maxPlayerType.healer){
+      disableAllJobs('healer');
+    }
+    if(dpsCount >= maxPlayerType.dps){
+      disableAllJobs('melee');
+      disableAllJobs('ranged');
+      disableAllJobs('caster');
+    } else {
+      // if(partyCompByType.caster >= maxPlayerType.caster){
+
+      // }
+    }
+  }
+
   const spinFinished = () => {
     let selected = theWheel.getIndicatedSegment();
     document.querySelector('.spin-result > h2').innerHTML = `You will be playing ${selected.text} (${selected.id})`;
@@ -349,10 +450,23 @@
       name: formData.get('name'),
       job: selected.id
     });
+    if(!selectedJobs.includes(selected.id)){
+      selectedJobs.push(selected.id);
+    }
+    if(noDuplicateJobs){
+      disableJob(selected.id);
+    }
+
+    partyCompByType[jobs[selected.id].type]++;
+    if(balancedParty){
+      checkPartyComposition();
+    }
     updateRoster();
 
-
-    isSpinning = false;
+    if(roster.length <= maxPlayerCount-1){
+      document.querySelector('.randomize-button').disabled = false;
+      isSpinning = false;
+    }
   }
 
   const spinTheWheel = () => {
@@ -366,6 +480,18 @@
     if(segments.length < 1){
       alert('Please select 1 or more jobs');
       return;
+    }
+
+    
+    document.querySelector('.randomize-button').disabled = true;
+
+    if(canChangeOption){
+      canChangeOption = false;
+      document.getElementById('balanced').disabled = true;
+      document.getElementById('unique').disabled = true;
+      balancedParty = document.getElementById('balanced').checked;
+      noDuplicateJobs = document.getElementById('unique').checked;
+      console.log(`balanced: ${balancedParty} / noDupe: ${noDuplicateJobs}`);
     }
 
     if(!isSpinning){
@@ -425,14 +551,18 @@
     if(jobType){
       let selectAllButton = document.querySelector(`#select-all-${jobType}`);
       jobTypes[jobType].forEach((jobKey)=>{
+        if(noDuplicateJobs && selectedJobs.includes(jobKey)){
+          return;
+        }
         document.querySelector(`.job-item #${jobKey}`).checked = selectAllButton ? selectAllButton.checked : false;
       });
     }
   }
 
+  
   const updateRoster = () => {
     let rosterContainer = document.querySelector('.team-list');
-    rosterContainer.innerHTML = roster.reduce((total, curr)=>{
+    let rosterHtml = roster.reduce((total, curr)=>{
       return total + `
       <div class="party-member">
         <div class="job-icon"><img class="job-icon job-icon-${curr.job}" src="${jobs[curr.job].icon}"></div>
@@ -441,6 +571,19 @@
       </div>
       `
     }, '');
+
+    let emptyCells = '';
+    for(let x = 0; x < maxPlayerCount - roster.length; x++){
+      emptyCells += `
+      <div class="party-member empty-cell">
+        <div class="job-icon"></div>
+        <div class="job-title"></div>
+        <div class="player"></div>
+      </div>
+      `;
+    }
+
+    rosterContainer.innerHTML = rosterHtml+emptyCells;
   }
 
   const jobsSelectionContainer = document.querySelector('div.jobs');
