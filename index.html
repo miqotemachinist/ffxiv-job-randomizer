@@ -93,7 +93,7 @@
 
   .job-group{
     display: grid;
-    grid-template-columns: 70px repeat(4, 50px);
+    grid-template-columns: 70px repeat(5, 50px);
   }
 
   .form-jobs{
@@ -177,11 +177,14 @@
   .party-member{
     display: grid;
     grid-template-columns: 50px 150px auto;
+    align-items: center;
   }
 
   .job-icon{
     max-width: 30px;
     width: 100%;
+    display: flex;
+    padding: 3px;
   }
 
   .team-list-header h3{
@@ -190,6 +193,12 @@
 
   .spin-result{
     text-align: center;
+  }
+  
+  .options-warning{
+    font-size: 0.8rem;
+    max-width: 300px;
+    margin-top: 10px;
   }
 </style>
 
@@ -209,7 +218,7 @@
             <div class="info">
               <div class="info-item">
                 <label for="name">Name</label>
-                <input type="text" name="name" id="name">
+                <input type="text" name="name" id="name" placeholder="Warrior of Light" >
               </div>
               <!-- <div class="info-item">
                 <label for="server">Server</label>
@@ -233,6 +242,7 @@
                 <label for="ttddddhh">2 Tanks / 4 DPS / 2 Healers</label>
               </div>
               <div class="options-warning">These options will be locked once you spin the wheel more than once until you refresh the page.</div>
+              <div class="options-warning">Click on role/jobs to include or exclude from the wheel.</div>
             </div>
             <div class="jobs" onchange="jobFormChange()">
             </div>
@@ -333,6 +343,12 @@
       icon: 'img/sam.png',
       type: 'melee'
     },
+    rpr: {
+      name: 'Reaper',
+      color: '#965a90',
+      icon: 'img/rpr.png',
+      type: 'melee'
+    },
 
     blm: {
       name: 'Black Mage',
@@ -389,16 +405,21 @@
       color: '#ffe74a',
       icon: 'img/ast.png',
       type: 'healer'
+    },
+    sge: {
+      name: 'Sage',
+      color: '#80a0f0',
+      icon: 'img/sge.png',
+      type: 'healer'
     }
-
   }
 
   const jobTypes = {
     tank: ['pld', 'war', 'drk', 'gnb'],
-    melee: ['mnk', 'drg', 'nin', 'sam'],
+    melee: ['mnk', 'drg', 'nin', 'sam', 'rpr'],
     ranged: ['brd', 'mch', 'dnc'],
     caster: ['blm', 'smn', 'rdm'],
-    healer: ['whm', 'sch', 'ast']
+    healer: ['whm', 'sch', 'ast', 'sge']
   }
 
   const disableJob = (jobKey) => {
@@ -442,7 +463,7 @@
 
   const spinFinished = () => {
     let selected = theWheel.getIndicatedSegment();
-    document.querySelector('.spin-result > h2').innerHTML = `You will be playing ${selected.text} (${selected.id})`;
+    document.querySelector('.spin-result > h2').innerHTML = `You will be playing ${selected.text} (${selected.id.toUpperCase()})`;
     console.log(selected);
 
     let formData = new FormData(document.querySelector('.form-jobs'));
