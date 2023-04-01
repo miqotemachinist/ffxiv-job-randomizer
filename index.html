@@ -94,6 +94,7 @@
   .job-group{
     display: grid;
     grid-template-columns: 70px repeat(5, 50px);
+    position: relative;
   }
 
   .form-jobs{
@@ -103,7 +104,7 @@
 
   .jobs{
     display: grid;
-    grid-gap: 10px;
+    /* grid-gap: 10px; */
   }
 
   .job-label,
@@ -114,7 +115,9 @@
     flex-wrap: wrap;
     opacity: 0.3;
     cursor: pointer;
-    transition: opacity 300ms;
+    transition: opacity 300ms, background-color 300ms;
+    padding: 5px;
+    border-radius: 5px;
   }
 
   .select-all-label p,
@@ -130,6 +133,28 @@
     max-width: 30px;
     width: 100%;
     height: auto;
+  }
+
+  .job-label:hover{
+    background-color: #ffffff33;
+  }
+
+  .select-all-label{
+    position: relative;
+  }
+
+  .job-select-all::before {
+    content: "";
+    width: 100%;
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color 300ms;
+    border-radius: 5px;
+  }
+
+  .job-select-all:hover::before{
+    background-color: #ffffff33;
   }
 
   .jobs input[type="checkbox"]{
@@ -200,6 +225,14 @@
     max-width: 300px;
     margin-top: 10px;
   }
+  
+  .info-item.random-options-party-size{
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+
+  .party-type{
+  }
 </style>
 
 <body>
@@ -237,9 +270,11 @@
                 <input type="checkbox" name="unique" id="unique" checked>
                 <label for="unique">Unique Jobs</label>
               </div>
-              <div class="info-item random-options-ttddddhh">
-                <input type="checkbox" name="ttddddhh" id="ttddddhh" checked disabled>
-                <label for="ttddddhh">2 Tanks / 4 DPS / 2 Healers</label>
+              <div class="info-item random-options-party-size">
+                <input class="party-type light-party" type="radio" name="partySize" id="lightparty" checked>
+                <label for="lightparty">Light Party (4 players)</label>
+                <input class="party-type full-party" type="radio" name="partySize" id="fullparty">
+                <label for="fullparty">Full Party (8 players)</label>
               </div>
               <div class="options-warning">These options will be locked once you spin the wheel more than once until you refresh the page.</div>
               <div class="options-warning">Click on role/jobs to include or exclude from the wheel.</div>
@@ -276,6 +311,8 @@
   var balancedParty = true;
   var noDuplicateJobs = true;
   var canChangeOption = true;
+  var isLightParty = true;
+  var isFullParty = false;
   var selectedJobs = [];
   var partyCompByType = {
     tank: 0,
@@ -284,7 +321,16 @@
     ranged: 0,
     healer: 0
   }
-  const maxPlayerType = {
+
+  const lightPartyMax = {
+    tank: 1,
+    dps: 2,
+    caster: 2,
+    melee: 2,
+    ranged: 2,
+    healer: 1
+  };
+  const fullPartyMax = {
     tank: 2,
     dps: 4,
     caster: 2,
@@ -292,7 +338,11 @@
     ranged: 2,
     healer: 2
   };
-  const maxPlayerCount = 8;
+  var maxPlayerType = lightPartyMax;
+
+  const lightPartyCount = 4;
+  const fullPartyCount = 9;
+  var maxPlayerCount = lightPartyCount;
   const jobs = {
     pld: {
       name: 'Paladin',
@@ -512,7 +562,23 @@
       document.getElementById('unique').disabled = true;
       balancedParty = document.getElementById('balanced').checked;
       noDuplicateJobs = document.getElementById('unique').checked;
+      isLightParty = document.getElementById('lightparty').checked;
+      isFullParty = document.getElementById('fullparty').checked;
+      if(isLightParty){
+        isFullParty = document.getElementById('fullparty').disabled = true;
+      }
+      if(isFullParty){
+        isLightParty = document.getElementById('lightparty').disabled = true;
+      }
+      if(isLightParty){
+        maxPlayerType = lightPartyMax;
+        maxPlayerCount = lightPartyCount;
+      } else {
+        maxPlayerType = fullPartyMax;
+        maxPlayerCount = fullPartyCount;
+      }
       console.log(`balanced: ${balancedParty} / noDupe: ${noDuplicateJobs}`);
+      console.log(`isLightParty: ${isLightParty} / isFullParty: ${isFullParty}`);
     }
 
     if(!isSpinning){
