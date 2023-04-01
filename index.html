@@ -565,10 +565,10 @@
       isLightParty = document.getElementById('lightparty').checked;
       isFullParty = document.getElementById('fullparty').checked;
       if(isLightParty){
-        isFullParty = document.getElementById('fullparty').disabled = true;
+        document.getElementById('fullparty').disabled = true;
       }
       if(isFullParty){
-        isLightParty = document.getElementById('lightparty').disabled = true;
+        document.getElementById('lightparty').disabled = true;
       }
       if(isLightParty){
         maxPlayerType = lightPartyMax;
